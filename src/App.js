@@ -8,9 +8,12 @@ function App() {
       <Header />
      <Routes>
      <Route path="/login" element={<Login />} />
+
      <Route path="/menu/wallet" element={<UserWallet />} />
      {/* <Route path="/payment-success" element={<PaymentSuccess />} />
      <Route path="/payment-failed" element={<PaymentFailed />} /> */}
+
+     <Route path="/register" element={<Register />} />
 
      </Routes>
     </>
