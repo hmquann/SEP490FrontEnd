@@ -19,7 +19,7 @@ const BrandList = () => {
   const [showEditModal, setShowEditModal] = useState(false); // State for Edit Modal
   const [brandToEdit, setBrandToEdit] = useState(null); // State for brand to edit
 
-  const fetchBrands = async () => {
+  const fetchBrands = async (currentPage,pageSize) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/brand/getAllBrand/${currentPage}/${pageSize}`
@@ -98,7 +98,7 @@ const BrandList = () => {
   return (
     <div className="max-w-5xl mx-auto p-4 bg-zinc-100">
       <div className="bg-gradient-to-r from-cyan-700 from-40% to-red-500 text-white p-4 rounded-t-lg flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Manage Brand</h2>
+        <h2 className="text-2xl font-bold">Brand Management</h2>
         <div>
           <button
             className={`${buttonClasses}hover:from-zinc-700 hover:to-pink-800 bg-gradient-to-r from-red-800 to-red-700 text-white rounded-full `}
