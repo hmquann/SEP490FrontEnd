@@ -5,7 +5,7 @@ const PaymentFailed = () => {
   const navigate = useNavigate();
 
   const handleBackToWallet = () => {
-    navigate("/wallet");
+    navigate("/menu/wallet");
   };
 
   return (
