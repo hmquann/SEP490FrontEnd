@@ -9,7 +9,7 @@ const PaymentSuccess = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-100 dark:bg-800">
+    <div className="flex flex-col items-center justify-center  max-w-9xl mx-aut p-32 bg-zinc-100 ">
       <div className="w-32 h-32 mb-4 flex items-center justify-center bg-green-500 dark:bg-green-400 text-white text-4xl font-bold rounded-full">
         ✓
       </div>
