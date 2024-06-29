@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import './App.css';
 
 import UserWallet from './pages/wallet/UserWallet';
@@ -21,7 +21,7 @@ function App() {
 
      <Route path="/register" element={<Register />} />
      <Route path="/brand" element={<BrandList />} />
-
+     <Route path="/chatapp" element={<ChatApp />} />
      </Routes>
     </>
 
