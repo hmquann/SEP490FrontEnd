@@ -1,288 +1,472 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
-import Homepage from "../hompage/Homepage";
 import { useNavigate } from "react-router-dom";
-
-const sharedClasses = {
-  bgGreen: 'bg-green-500',
-  textWhite: 'text-white',
-  roundedLG: 'rounded-lg',
-  shadow: 'shadow',
-  p4: 'p-4',
-  p6: 'p-6',
-  mt4: 'mt-4',
-  mx4: 'mx-4',
-  flex: 'flex',
-  justifyCenter: 'justify-center',
-  justifyBetween: 'justify-between',
-  itemsCenter: 'items-center',
-  spaceX4: 'space-x-4',
-  spaceX2: 'space-x-2',
-  spaceY4: 'space-y-4',
-  gridCols1: 'grid-cols-1',
-  gridCols2: 'grid-cols-2',
-  gridCols3: 'grid-cols-3',
-  gap4: 'gap-4',
-  wFull: 'w-full',
-  h10: 'h-10',
-  w8: 'w-8',
-  h8: 'h-8',
-  mb4: 'mb-4',
-  mdGridRow: 'md:flex-row',
-  mdGridCol: 'md:grid-cols-2',
-  textCenter: 'text-center',
-  textLeft: 'text-left',
-  textSm: 'text-sm',
-  textLg: 'text-lg',
-  fontSemibold: 'font-semibold',
-  border: 'border',
-  borderZinc300: 'border-zinc-300',
-  roundedFull: 'rounded-full',
-};
-
-const Navbar = () => {
-  return (
-    <nav className={`bg-white dark:bg-zinc-800 ${sharedClasses.shadow} ${sharedClasses.p4} ${sharedClasses.flex} ${sharedClasses.justifyBetween} ${sharedClasses.itemsCenter}`}>
-      <div className={`${sharedClasses.flex} ${sharedClasses.itemsCenter} ${sharedClasses.spaceX4}`}>
-        <img src="https://placehold.co/50x50" alt="Logo" className={sharedClasses.h10} />
-        <button className={`${sharedClasses.bgGreen} ${sharedClasses.textWhite} px-4 py-2 ${sharedClasses.roundedLG}`}>About</button>
-        <button className={`${sharedClasses.bgGreen} ${sharedClasses.textWhite} px-4 py-2 ${sharedClasses.roundedLG}`}>Trips</button>
-        <button className={`${sharedClasses.bgGreen} ${sharedClasses.textWhite} px-4 py-2 ${sharedClasses.roundedLG}`}>Car Rent</button>
-        <button className={`${sharedClasses.bgGreen} ${sharedClasses.textWhite} px-4 py-2 ${sharedClasses.roundedLG}`}>Contact</button>
-      </div>
-      <button className={`${sharedClasses.bgGreen} ${sharedClasses.textWhite} px-4 py-2 ${sharedClasses.roundedLG}`}>User</button>
-    </nav>
-  );
-};
-
-const StepIndicator = ({ stepNumber, stepText }) => {
-  return (
-    <div className={`${sharedClasses.flex} ${sharedClasses.itemsCenter} ${sharedClasses.spaceX2}`}>
-      <div className={`bg-zinc-300 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 ${sharedClasses.roundedFull} ${sharedClasses.w8} ${sharedClasses.h8} ${sharedClasses.flex} ${sharedClasses.itemsCenter} ${sharedClasses.justifyCenter}`}>{stepNumber}</div>
-      <span>{stepText}</span>
-    </div>
-  );
-};
-
-const FormInput = ({ label, placeholder,name,value }) => {
-  return (
-    <div className={sharedClasses.mb4}>
-      <h2 className={`${sharedClasses.textLg} ${sharedClasses.fontSemibold}`}>{label}</h2>
-      <input type="text"name={name} value={value} className={`${sharedClasses.wFull} mt-2 p-2 ${sharedClasses.border} ${sharedClasses.borderZinc300} ${sharedClasses.roundedLG}`} placeholder={placeholder} />
-    </div>
-  );
-};
-
-const FormSelect = ({ label,value, onChange, name, options = [] , keyName,keyId,disableCondition}) => {
-  return (
-    <div className="mb-4">
-      <h2 className="text-lg font-semibold">{label}</h2>
-      <select
-        className="w-full mt-2 p-2 border border-zinc-300 rounded-lg"
-        value={value}
-        onChange={onChange}
-        name={name}
-      >
-        <option value="" disabled={disableCondition}>-- Select --</option>
-        {options.map((option) => (
-          <option key={option.keyId} value={option.keyId}>
-            {option[keyName]}    
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-const TextAreaInput = ({ label, placeholder }) => {
-  return (
-    <div className={sharedClasses.mb4}>
-      <h2 className={`${sharedClasses.textLg} ${sharedClasses.fontSemibold}`}>{label}</h2>
-      <textarea className={`${sharedClasses.wFull} mt-2 p-2 ${sharedClasses.border} ${sharedClasses.borderZinc300} ${sharedClasses.roundedLG}`} placeholder={placeholder}></textarea>
-    </div>
-  );
-};
-
-const Footer = () => {
-  return (
-    <footer className={`bg-white dark:bg-zinc-800 ${sharedClasses.shadow} ${sharedClasses.p6} ${sharedClasses.mt4}`}>
-      <div className={`${sharedClasses.flex} ${sharedClasses.mdGridRow} ${sharedClasses.justifyBetween} ${sharedClasses.itemsCenter}`}>
-        <img src="https://placehold.co/100x50" alt="Logo" className={`${sharedClasses.h10} ${sharedClasses.mb4} md:mb-0`} />
-        <div className={`${sharedClasses.textCenter} ${sharedClasses.mdTextLeft}`}>
-          <p className={sharedClasses.textSm}>Policy</p>
-          <p className={sharedClasses.textSm}>Policies and regulations</p>
-          <p className={sharedClasses.textSm}>Information security</p>
-          <p className={sharedClasses.textSm}>Dispute resolution</p>
-        </div>
-        <div className={`${sharedClasses.textCenter} ${sharedClasses.mdTextLeft}`}>
-          <p className={sharedClasses.textSm}>Find out more</p>
-          <p className={sharedClasses.textSm}>General guidance</p>
-          <p className={sharedClasses.textSm}>Instructions for booking</p>
-          <p className={sharedClasses.textSm}>Payment Guide</p>
-        </div>
-        <div className={`${sharedClasses.textCenter} ${sharedClasses.mdTextLeft}`}>
-          <p className={sharedClasses.textSm}>Partner</p>
-          <p className={sharedClasses.textSm}>Register vehicle owner</p>
-          <p className={sharedClasses.textSm}>Register for a long-term car rental</p>
-        </div>
-      </div>
-      <div className={`${sharedClasses.textCenter} ${sharedClasses.textSm} ${sharedClasses.mt4}`}>
-        <p>&copy; 2023 Company Name. All rights reserved.</p>
-        <p>Address: Office A, 123 Street, City</p>
-        <p>Phone: 123-456-7890</p>
-      </div>
-    </footer>
-  );
-};
-
+const inputClasses =
+  "w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500";
+const buttonClasses =
+  "bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500";
+const labelClasses = "block text-sm font-medium text-zinc-700 mb-2";
 const RegisterMotorbikeStep2 = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    motorbikePlate: "",
-    brand:{ brandId: "",brandName:"",origin:""},
-    model: {modelId: "",modelName:"",cylinderCapacity:"",fuelType:"",fuelConsumption:"",modelType:"",brand:{}},
-    yearOfManuFacture: "",
-    description: "",
-    constraintMotorbike: "",
-    price:"",
-    overtimeFee:"",
-    overtimeLimit:"",
-    delivery:"",
-    freeshipDistance:"",
-    deliveryFeePerKilometer:"",
-    motorbikeAddress:""
-  });
-  const [models, setModels] = useState([]);
-  const [newModels,setNewModels]=useState([]);
-  const [brands, setBrands] = useState([]);
-  const[error,setError]=useState(null);
-  const[loading,setLoading]=useState(false);
-  const [selectedBrand, setSelectedBrand] = useState(null);
-  const [selectedModel, setSelectedModel] = useState(null);
-  const[motorbikePlateError,setMotorbikePlateError]=useState([]);
-  const[motorbikeBrandError,setMotorbikeBrandError]=useState([]);
-  const[motorbikeModelError,setMotorbikeModelError]=useState([]);
-  const[manufactureYearError,setManufactureYearError]=useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+  const[addressDetail,setAddressDetail]=useState("");
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const receiveData = location.state.formData;
+
+  const [checkDelivery,setCheckDelivery]=useState(true);
+  const[checkLocation,setCheckLocation]=useState(true);
+  const[formData,setFormData]=useState(receiveData);
+  const[overtimeFeeError,setOvertimeFeeError]=useState();
+  const[priceError,setPriceError]=useState();
+  const[overtimeLimitError,setOvertimeLimitError]=useState();
+  const[deliveryFeeError,setDeliveryFeeError]=useState();
+  const[freeshipError,setFreeshipError]=useState();
+
   useEffect(() => {
-      axios.get('http://localhost:8080/api/model/getAllModel')
-          .then(response => setModels(response.data))
-          .catch(error => console.error('Error fetching models:', error));
-
-      axios.get('http://localhost:8080/api/brand/getAllBrand')
-          .then(response => setBrands(response.data))
-          .catch(error => console.error('Error fetching other entities 1:', error));
+    fetch("https://vapi.vnappmob.com/api/province")
+      .then(response => response.json())
+      .then(data => {
+        console.log('API response:', data); 
+        if (data && data.results) {
+          setProvinces(data.results); // Điều chỉnh theo cấu trúc dữ liệu thực tế
+        } else {
+          throw new Error('Invalid data format');
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setLoading(false);
+      });
   }, []);
-  const checkPlate=(plateNumber)=>{
-    const regex = /^\d{2}-[A-Z0-9]{2}-\d{5}$/;
-  return regex.test(plateNumber);
+  const handleCheckDelivery = (event) => {
+    setCheckDelivery(!event.target.checked);
+    setFormData({
+      ...formData,
+      delivery:checkDelivery
+    })
+  };
+  const handleCheckLocation=(event)=>{
+    setCheckLocation(!event.target.checked)
+
   }
-  const checkManufactureYear=(manufacture)=>{
-    const regex=/^\d{4}$/;
-    return (regex.test(manufacture)&&manufacture>2000&&manufacture<2030)
+  const handleProvinceChange = (event) => {
+    const provinceId = event.target.value;
+    const selectedProvince = provinces.find(d => d.province_id === provinceId);
+    setSelectedProvince(provinceId);
+    // Fetch districts based on selected province
+    fetch(`https://vapi.vnappmob.com/api/province/district/${provinceId}`)
+      .then((response) => response.json())
+      .then((data) => {
+
+        if (data && data.results) {
+          
+          setDistricts(data.results);
+          setWards([]);
+        } else {
+          throw new Error("Invalid data format");
+        }
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
+  const handleDistrictChange = (event) => {
+    const districtId = event.target.value;
+    const selectedDistrict = districts.find(d => d.district_id === districtId);
+    setSelectedDistrict(districtId);
+    // Fetch wards based on selected district
+    fetch(`https://vapi.vnappmob.com/api/province/ward/${districtId}`)
+      .then((response) => response.json())
+      .then((data) => {
+
+        if (data.results.length === 0) {
+          console.log("No wards available");
+          setWards([]); // Clear wards if no wards are available
+        }
+        if (data && data.results) {
+          setWards(data.results);
+        } else {
+          throw new Error("Invalid data format");
+        }
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+  const handleWardChange = (event) => {
+    const wardId = event.target.value;
+    const selectedWard = wards.find(d => d.ward_id === wardId);
+    setSelectedWard(wardId);   
+  };
+  const regexValueInput=(input)=>{
+    const regex=/^(?:[0-9]|[1-9][0-9]{0,5}|1000000)$/
+      return regex.test(input);
   }
-  useEffect(() => {  
-    if (selectedBrand && selectedBrand.brandId) {
-      console.log(selectedBrand)
-      setNewModels(models.filter((model)=>model.brand.brandId==selectedBrand.brandId))
-    }
-  }, [selectedBrand]);
-  const handleBrandsChange=(e)=>{
-    const {name,value}=e.target
-    setSelectedBrand(brands.find((brand) => brand.brandName == e.target.value)); 
-    if(value==""){
-      setMotorbikeBrandError("Not be empty")
-    }else{
-      setMotorbikeBrandError("")
-    }
-   }
- 
-useEffect(() => {
-    
-  if (selectedModel) {
-    console.log("Brand:"+selectedBrand+"Model:"+selectedModel)
-    setFormData(prevFormData => ({
-      ...prevFormData,
-    
-        brand: {
-          brandId: selectedBrand.brandId,
-          brandName: selectedBrand.brandName,
-          origin: selectedBrand.origin
-        },
-      model: {
-        modelId: selectedModel.modelId,
-        modelName:selectedModel.modelName,
-        cylinderCapacity:selectedModel.cylinderCapacity,
-        fuelType:selectedModel.fuelType,
-        fuelConsumption:selectedModel.fuelConsumption,
-        brand:selectedModel.brand,
-        modelType:selectedModel.modelType
+  const handleChange = (e) => {
+    const {name,value}=e.target;
+      if(name==="overtimeFee"){
+        if(!regexValueInput(value)){
+          setOvertimeFeeError("Must be number")
+        }
+        if(value===""){
+          setOvertimeFeeError("Not null")
+        }
+        else{
+          setOvertimeFeeError("")
+        }     
       }
-    }));
+      if(name==="price"){
+        if(!regexValueInput(value)){
+          setPriceError("Must be number")
+        }
+        if(value===""){
+          setPriceError("Not null")
+        }
+        else{
+          setPriceError("")
+        }     
+      }
+      if(name==="overtimeLimit"){
+        if(!regexValueInput(value)){
+          setOvertimeLimitError("Must be number")
+        } if(value===""){
+          setOvertimeLimitError("Not null")
+        }
+        else{
+          setOvertimeLimitError("")
+        }     
+      }
+      if(name==="freeshipDistance"){
+        if(!regexValueInput(value)){
+          setFreeshipError("Must be number")
+        }if(value===""){
+          setFreeshipError("Not null")
+        }
+        else{
+          setFreeshipError("")
+        }     
+      }
+      if(name==="deliveryFeePerKilometer"){
+        if(!regexValueInput(value)){
+          setDeliveryFeeError("Must be number")
+        }if(value===""){
+          setDeliveryFeeError("Not null")
+        }
+        else{
+          setDeliveryFeeError("")
+        }     
+      }
+      setFormData({
+        ...formData,
+        [name]: value,
+      })
+    
+  };
+  const handleAddressChange=(e)=>{
+        setAddressDetail(e.target.value);
   }
-}, [selectedModel]);
- const handleModelChange=(e)=>{
-  console.log(newModels.find((model) => model.modelName == e.target.value))
-  setSelectedModel(newModels.find((model) => model.modelName == e.target.value));  
-  console.log(selectedModel)
-  if(e.target.value==""){
-    setMotorbikeModelError("Not be empty")
-  }else{
-    setMotorbikeModelError("")
-  }
- }
+  const handleReturnClick = () => {
+    navigate("/registermotorbike", { state: { receiveData} });
+  };
+  const handleSubmitClick=()=>{
+    if(deliveryFeeError||overtimeFeeError||overtimeLimitError||freeshipError){
+      setError("Please enter correct  before submitting.");
+    }
+    const province = provinces.find(d => d.province_id === selectedProvince).province_name;
+    const district = districts.find(d => d.district_id === selectedDistrict).district_name;
+    const ward = wards.find(d => d.ward_id === selectedWard).ward_name;
+    const address=addressDetail+","+ward+","+district+","+province
+    setFormData({
+      ...formData,
+      motorbikeAddress:address
+    })
+    console.log(formData)
+    axios
+      .post("http://localhost:8080/api/motorbike/register", formData, {
+        headers: {
+         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+    .then((response) => {
+      console.log("Data sent successfully:", response.data);
+      navigate("/homepage")
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(formData);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error response:", error.response);
+        console.error("Status code:", error.response.status);
+        console.error("Data:", error.response.data);
 
-const handleChange=(e)=>{
-  const {name,value}=e.target;
-  if (name === "motorbikePlate") {
-    if (!value) {
-      setMotorbikePlateError( "Plate number cannot be empty.");
-    } else if (checkPlate(value)==false) {
-      setMotorbikePlateError("Invalid plate format. Example: 11-A1-11111");
-    }else{
-      setMotorbikePlateError("");
-    }
-  }
+        if (error.response.status === 404) {
+          setError(
+            "Error 404: Not Found. The requested resource could not be found."
+          );
+        } else if (error.response.status === 409) {
+          setError(error.response.data);
+        } else {
+          setError(
+            `Error ${error.response.status}: ${
+              error.response.data.message || "An error occurred."
+            }`
+          );
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Error request:", error.request);
+        setError(
+          "No response received. Please check your network connection."
+        );
+      }
+      setLoading(false);
+    });
+};
 
-  if (name === "yearOfManuFacture") {
-    if (!value) {
-      setManufactureYearError( "Manufacture cannot be empty.");
-    }else if(checkManufactureYear(value)==false){
-      setManufactureYearError("Invalid year")
-    }
-    else{
-      setManufactureYearError("");
-    }
-  }
-  setFormData({
-    ...formData,
-    [name]: value,
-  });
-}
-const handleReturnNavigate=()=>{
-  navigate("/homepage", { state: {} });
-}
- const handleSunbmit=(e)=>{   
-  console.log(formData)
-  e.preventDefault();
-  setError(null);
-  if (    motorbikeBrandError || motorbikeModelError ||
-          motorbikePlateError || manufactureYearError) {
-    setError("Please enter correct  before submitting.");
-  }else{
-    setLoading(true)
-    navigate('/registermotorbike/step2', { state: {formData} });
-  }
- }
-  return ( 
-    <div>
-        lon
-        <Footer />
+
+  return (
+    <div className="min-h-screen bg-zinc-50 p-6 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-screen-lg">
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-zinc-700 mb-2">
+            Default price
+          </label>
+          <p className="text-sm text-zinc-500 mb-6">
+            Unit price applies to all days. You can customize other prices for
+            special days (weekends, holidays, Tet...) in the vehicle management
+            section after registration.
+          </p>
+          <input
+            type="text"
+            name="price"
+            className={`${inputClasses} mb-3`}
+            placeholder="Enter price"
+            value={formData.price}
+            onChange={handleChange}
+          />
+          {priceError && <div className="text-red-500">{priceError}</div>}
+        </div>
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-zinc-700 mb-2">
+            Vehicle address
+          </label>
+          <div className="flex items-center mb-3">
+            <input
+              type="radio"
+              name="address"
+              id="defaultAddress"
+              defaultChecked
+              className="mr-2 focus:ring-green-500"
+              onClick={handleCheckLocation}
+            />
+            
+            <label htmlFor="defaultAddress" className="text-sm text-zinc-700">
+              Your default address
+            </label>
+          </div>
+          <div className="pl-6 mb-4 text-sm text-zinc-700">
+            Royal City, Nguyễn Trãi, Thanh Xuân, Hà Nội
+          </div>
+          <div className="flex items-center mb-3"  >
+            <input
+              type="radio"
+              name="address"
+              id="newAddress"
+              className="mr-2 focus:ring-green-500"
+              onClick={handleCheckLocation}
+            />
+            <label htmlFor="newAddress" className="text-sm text-zinc-700">
+              New Address
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"  >
+            <select
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              id="provinces"
+              name="province"
+              value={selectedProvince}
+              onChange={handleProvinceChange}
+              disabled={checkLocation}
+            >
+              <option value="">Select provinces</option>
+              {provinces.map((province) => (
+                <option key={province.province_id} value={province.province_id}>
+                  {province.province_name}
+                </option>
+              ))}
+            </select>
+            <select
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={selectedDistrict}
+              name="district"
+              onChange={handleDistrictChange}
+              disabled={!selectedProvince}
+            >
+              <option value="">Select District</option>
+              {districts.map((district) => (
+                <option key={district.district_id} value={district.district_id}>
+                  {district.district_name}
+                </option>
+              ))}
+            </select>
+            <select
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={selectedWard}
+              name="ward"
+              onChange={handleWardChange}
+              disabled={!selectedDistrict}
+              id="wards"
+            >
+              <option value="">Select wards</option>
+              {wards.map((ward) => (
+                <option key={ward.ward_id} value={ward.ward_id}>
+                  {ward.ward_name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              placeholder="Enter address detail"
+              name="addressDetail"
+              value={addressDetail}
+              onChange={handleAddressChange}
+              disabled={checkLocation}
+              type="text"
+                className="w-2/3 p-2 border rounded mr-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap mb-6">
+          {/* Overtime fee section */}
+          <div className="w-full sm:w-1/2 pr-3 mb-6 sm:mb-0">
+            <label className="block text-sm font-medium text-zinc-700 mb-2">
+              Overtime fee
+            </label>
+            <div className="flex items-center">
+              <input
+                type="text"
+                name="overtimeFee"
+                className="w-2/3 p-2 border rounded mr-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter fee"
+                value={formData.overtimeFee}
+                onChange={handleChange}
+              />
+              
+              <span className="text-sm text-zinc-700">VND/hour</span>
+            </div>
+            {overtimeFeeError && <div className="text-red-500">{overtimeFeeError}</div>}
+          </div>
+
+          {/* Overtime limit section */}
+          <div className="w-full sm:w-1/2 pl-3">
+            <label className="block text-sm font-medium text-zinc-700 mb-2">
+              Overtime limit
+            </label>
+            <div className="flex items-center">
+              <input
+                type="text"
+                name="overtimeLimit"
+                className="w-2/3 p-2 border rounded mr-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter limit"
+                value={formData.overtimeLimit}
+                onChange={handleChange}
+              />             
+              <span className="text-sm text-zinc-700">hour</span>
+            </div>
+            {overtimeLimitError && <div className="text-red-500">{overtimeLimitError}</div>}
+          </div>
+        </div>
+       
+        <div className="flex flex-wrap mb-6">
+          <div className="w-full sm:w-1/2 pr-3 mb-6 sm:mb-0">
+         <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Car delivery to your location</h2>
+         <label className="relative inline-flex items-center cursor-pointer">
+           <input type="checkbox" value={checkDelivery} className="sr-only peer" onClick={handleCheckDelivery} />
+          <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-green-600"></div>
+         </label>
       </div>
-      
-      
+      </div>
+        <div className="flex flex-wrap justify-between mb-6 space-y-4"  >
+          <div className="w-full md:w-1/2 pr-2" >
+            <label className="block text-sm font-medium text-zinc-700 mb-1">
+              Free Ship Distance
+            </label>
+            <div className="flex items-center" >
+              <input
+                type="text"
+                name="freeshipDistance"
+                className="w-2/3 p-2 border rounded mr-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter fee" 
+                value={formData.freeshipDistance}
+                disabled={checkDelivery}
+                onChange={handleChange}
+              />
+              
+              <span className="text-sm text-zinc-700">km</span>
+            </div>
+            {freeshipError && <div className="text-red-500">{freeshipError}</div>}
+          </div>
+          
 
+          <div className="w-full md:w-1/2 pr-2" >
+            <label className="block text-sm font-medium text-zinc-700 mb-1" >
+              Delivery Fee
+            </label>
+            <div className="flex items-center" >
+              <input type="text"
+              name="deliveryFeePerKilometer"
+            className="w-2/3 p-2 border rounded mr-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter fee"
+                value={formData.deliveryFeePerKilometer} 
+                disabled={checkDelivery}
+                onChange={handleChange}
+              />
+              <span className="text-sm text-zinc-700">VND/km</span>
+            </div>
+            {deliveryFeeError && <div className="text-red-500">{deliveryFeeError}</div>}
+          </div>
+        </div>
+        <div className="p-6 bg-white dark:bg-zinc-800 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+            Image
+          </h2>
+          <p className="text-zinc-600 dark:text-zinc-300 mt-2">
+            Post multiple pictures from different angles to increase information
+            about your vehicle.
+          </p>
+          <div className="mt-4">
+            <div className="w-full h-64 bg-zinc-100 dark:bg-zinc-700 rounded-lg flex items-center justify-center">
+              <button className="bg-teal-500 text-white py-2 px-4 rounded-lg">
+                Choose image
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <button onClick={handleReturnClick} className={buttonClasses}>
+            Back
+          </button>
+          <button onClick={handleSubmitClick} className={buttonClasses}>Continue</button>
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default RegisterMotorbikeStep2;
-
